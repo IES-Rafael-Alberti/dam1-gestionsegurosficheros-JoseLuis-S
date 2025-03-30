@@ -1,5 +1,9 @@
 package org.albertidam.insurancemanager
 
+import org.albertidam.insurancemanager.data.RepositorioSegurosFicheros
+import org.albertidam.insurancemanager.model.SeguroAuto
+import org.albertidam.insurancemanager.model.SeguroHogar
+
 fun Double.redondearDosDecimales(): Double = String.format("%.2f", this).replace(",", ".").toDouble()
 
 fun main() {

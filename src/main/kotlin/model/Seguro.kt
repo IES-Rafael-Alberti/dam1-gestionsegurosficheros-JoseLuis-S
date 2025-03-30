@@ -14,7 +14,8 @@ abstract class Seguro(
     }
 
     abstract fun calcularImporteAniosSiguiente(interes: Double): Double
-    fun tipoSeguro() = (this::class.simpleName).toString()
+
+    fun tipoSeguro() = this::class.simpleName ?: "Desconocido"
 
     fun comprobarNumPoliza(numPoliza: Int): Boolean = numPoliza == this.numPoliza
 

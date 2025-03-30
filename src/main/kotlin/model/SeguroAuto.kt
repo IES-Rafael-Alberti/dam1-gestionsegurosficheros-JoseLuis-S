@@ -1,35 +1,78 @@
 package org.albertidam.insurancemanager.model
 
-class SeguroAuto(
-    val descripcion: String,
-    val combustible: String,
-    val tipoAuto: TipoAuto,
-    val tipoCobertura: String,
-    val asistenciaCarretera: Boolean,
-    val numPartes: Int,
-    numPoliza: Int,
-    dniTitular: String,
-    importe: Double
-): Seguro(numPoliza, dniTitular, importe) {
-    companion object {
-        fun generarID(): Int {
+class SeguroAuto : Seguro {
+    private val descripcion: String
+    private val combustible: String
+    private val tipoAuto: TipoAuto
+    private val tipoCobertura: String
+    private val asistenciaCarretera: Boolean
+    private val numPartes: Int
 
+    companion object {
+        private var numPolizasAuto = 400000
+        private const val PORCENTAJE_INCREMENTO_PARTES = 2
+
+        fun crearSeguroAuto(datos: List<String>): SeguroAuto {
+            require(datos.size == 7) { "Datos no válidos para crear un seguro de auto" }
+            val descripcion = datos[0]
+            val combustible = datos[1]
+            val tipoAuto = TipoAuto.getAuto(datos[2])
+            val tipoCobertura = datos[3]
+            val asistenciaCarretera = datos[4].toBooleanStrict()
+            val numPartes = datos[5].toInt()
+            val dniTitular = datos[6]
+            val importe = datos[7].toDouble()
+            return SeguroAuto(descripcion, combustible, tipoAuto, tipoCobertura, asistenciaCarretera, numPartes, dniTitular, importe)
         }
+    }
+
+    private constructor(
+        descripcion: String,
+        combustible: String,
+        tipoAuto: TipoAuto,
+        tipoCobertura: String,
+        asistenciaCarretera: Boolean,
+        numPartes: Int,
+        dniTitular: String,
+        importe: Double
+    ) : super(numPoliza = numPolizasAuto, dniTitular, importe) {
+        this.descripcion = descripcion
+        this.combustible = combustible
+        this.tipoAuto = tipoAuto
+        this.tipoCobertura = tipoCobertura
+        this.asistenciaCarretera = asistenciaCarretera
+        this.numPartes = numPartes
+    }
+
+    private constructor(
+        descripcion: String,
+        combustible: String,
+        tipoAuto: TipoAuto,
+        tipoCobertura: String,
+        asistenciaCarretera: Boolean,
+        numPartes: Int,
+        numPoliza: Int,
+        dniTitular: String,
+        importe: Double
+    ) : super(numPoliza, dniTitular, importe) {
+        this.descripcion = descripcion
+        this.combustible = combustible
+        this.tipoAuto = tipoAuto
+        this.tipoCobertura = tipoCobertura
+        this.asistenciaCarretera = asistenciaCarretera
+        this.numPartes = numPartes
     }
 
     override fun calcularImporteAniosSiguiente(interes: Double): Double {
         return if (numPartes > 0) {
-            ((((numPartes * 2) + interes) / 100) + 1) * obtenerImporte()
+            ((((numPartes * PORCENTAJE_INCREMENTO_PARTES) + interes) / 100) + 1) * importe
         } else {
-            obtenerImporte() * (1 + interes / 100)
+            importe * (1 + interes / 100)
         }
     }
 
-    override fun tipoSeguro() {
-        TODO("Not yet implemented")
-    }
-
-    override fun serializar(): String {
-        TODO("Not yet implemented")
+    override fun serializar(separador: String): String {
+        return super.serializar(separador) + "$separador$descripcion$separador$combustible$separador" +
+                "$tipoAuto$separador$tipoCobertura$separador$asistenciaCarretera$separador$numPartes"
     }
 }
