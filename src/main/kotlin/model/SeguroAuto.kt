@@ -4,7 +4,7 @@ class SeguroAuto : Seguro {
     private val descripcion: String
     private val combustible: String
     private val tipoAuto: TipoAuto
-    private val tipoCobertura: String
+    private val tipoCobertura: Cobertura
     private val asistenciaCarretera: Boolean
     private val numPartes: Int
 
@@ -17,7 +17,7 @@ class SeguroAuto : Seguro {
             val descripcion = datos[0]
             val combustible = datos[1]
             val tipoAuto = TipoAuto.getAuto(datos[2])
-            val tipoCobertura = datos[3]
+            val tipoCobertura = Cobertura.getCobertura(datos[3])
             val asistenciaCarretera = datos[4].toBooleanStrict()
             val numPartes = datos[5].toInt()
             val dniTitular = datos[6]
@@ -26,11 +26,11 @@ class SeguroAuto : Seguro {
         }
     }
 
-    private constructor(
+    constructor(
         descripcion: String,
         combustible: String,
         tipoAuto: TipoAuto,
-        tipoCobertura: String,
+        tipoCobertura: Cobertura,
         asistenciaCarretera: Boolean,
         numPartes: Int,
         dniTitular: String,
@@ -48,7 +48,7 @@ class SeguroAuto : Seguro {
         descripcion: String,
         combustible: String,
         tipoAuto: TipoAuto,
-        tipoCobertura: String,
+        tipoCobertura: Cobertura,
         asistenciaCarretera: Boolean,
         numPartes: Int,
         numPoliza: Int,

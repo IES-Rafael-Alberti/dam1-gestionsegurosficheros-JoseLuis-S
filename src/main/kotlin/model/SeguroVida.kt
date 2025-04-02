@@ -26,7 +26,7 @@ class SeguroVida : Seguro {
         }
     }
 
-    private constructor(
+    constructor(
         fechaNac: LocalDate,
         nivelRiesgo: NivelRiesgo,
         indemnizacion: Double,

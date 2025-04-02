@@ -5,7 +5,7 @@ import org.albertidam.insurancemanager.model.Perfil
 import org.albertidam.insurancemanager.model.Usuario
 import org.albertidam.insurancemanager.utils.IUtilSeguridad
 
-class GestorUsuarios(val repoUsuario: IRepoUsuarios, val seguridad: IUtilSeguridad) : IServUsuarios, IUtilSeguridad {
+class GestorUsuarios(val repoUsuario: IRepoUsuarios, val seguridad: IUtilSeguridad) : IServUsuarios {
     override fun iniciarSesion(nombre: String, clave: String): Perfil? {
         val usuario: Usuario? = repoUsuario.buscar(nombre)
         val comprobacionClave: Boolean = seguridad.verificarClave(clave, seguridad.encriptarClave(clave))
@@ -22,31 +22,22 @@ class GestorUsuarios(val repoUsuario: IRepoUsuarios, val seguridad: IUtilSegurid
     }
 
     override fun eliminarUsuario(nombre: String): Boolean {
-        TODO("Not yet implemented")
+        val usuario: Usuario? = repoUsuario.buscar(nombre)
+        return if (usuario != null) {
+            repoUsuario.eliminar(usuario)
+            true
+        } else false
     }
 
     override fun cambiarClave(usuario: Usuario, nuevaClave: String): Boolean {
-        TODO("Not yet implemented")
+        val claveEncriptada = seguridad.encriptarClave(nuevaClave)
+        usuario.cambiarClave(claveEncriptada)
+        return true
     }
 
-    override fun buscarUsuario(nombre: String): Usuario? {
-        TODO("Not yet implemented")
-    }
+    override fun buscarUsuario(nombre: String): Usuario? = repoUsuario.buscar(nombre)
 
-    override fun consultarTodos(): List<Usuario> {
-        TODO("Not yet implemented")
-    }
+    override fun consultarTodos(): List<Usuario> = repoUsuario.obtenerTodos()
 
-    override fun consultarPorPerfil(perfil: Perfil): List<Usuario> {
-        TODO("Not yet implemented")
-    }
-
-    override fun encriptarClave(clave: String, nivelSeguridad: Int): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun verificarClave(claveIngresada: String, hashAlmacenado: String): Boolean {
-        TODO("Not yet implemented")
-    }
-
+    override fun consultarPorPerfil(perfil: Perfil): List<Usuario> = repoUsuario.obtener(perfil)
 }
