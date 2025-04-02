@@ -9,12 +9,8 @@ class SeguroHogar : Seguro {
     private val direccion: String
     private val anioConstruccion: Int
 
-    init {
-        numPolizasHogar++
-    }
-
     companion object {
-        private var numPolizasHogar = 100000
+        var numPolizasHogar = 100000
         const val PORCENTAJE_INCREMENTO_ANIOS = 0.02
         const val CICLO_ANIOS_INCREMENTO = 5
 
@@ -30,7 +26,7 @@ class SeguroHogar : Seguro {
         }
     }
 
-    private constructor(
+     constructor(
         metrosCuadrados: Int,
         valorContenido: Double,
         direccion: String,
@@ -42,6 +38,7 @@ class SeguroHogar : Seguro {
             this.valorContenido = valorContenido
             this.direccion = direccion
             this.anioConstruccion = anioConstruccion
+            numPolizasHogar++
         }
 
     private constructor(

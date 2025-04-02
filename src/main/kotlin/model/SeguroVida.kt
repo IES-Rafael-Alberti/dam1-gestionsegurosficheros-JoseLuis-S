@@ -13,7 +13,7 @@ class SeguroVida : Seguro {
     }
 
     companion object {
-        private var numPolizasVida = 800000
+        var numPolizasVida = 800000
 
         fun crearSeguroVida(datos: List<String>): SeguroVida {
             require(datos.size == 5) { "Datos no validos para crear un seguro de vida" }

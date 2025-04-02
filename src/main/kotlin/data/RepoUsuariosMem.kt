@@ -4,7 +4,7 @@ import org.albertidam.insurancemanager.model.Perfil
 import org.albertidam.insurancemanager.model.Usuario
 
 open class RepoUsuariosMem : IRepoUsuarios {
-    private val usuarios = mutableListOf<Usuario>()
+    val usuarios = mutableListOf<Usuario>()
 
     override fun agregar(usuario: Usuario): Boolean {
         if (buscar(usuario.nombre) != null) return false
@@ -23,8 +23,7 @@ open class RepoUsuariosMem : IRepoUsuarios {
 
     override fun obtenerTodos(): List<Usuario> = usuarios
 
-    override fun obtener(perfil: Perfil): List<Usuario> =
-        usuarios.filter { it.perfil == perfil }
+    override fun obtener(perfil: Perfil): List<Usuario> = usuarios.filter { it.perfil == perfil }
 
     override fun cambiarClave(usuario: Usuario, nuevaClave: String): Boolean {
         usuario.cambiarClave(nuevaClave)

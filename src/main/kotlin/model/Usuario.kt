@@ -14,11 +14,15 @@ class Usuario private constructor(
         }
     }
 
-    fun verificarClave(claveEncriptada: String): Boolean = claveEncriptada == clave
-
     fun cambiarClave(nuevaClaveEncriptada: String) {
         clave = nuevaClaveEncriptada
     }
 
     override fun serializar(separador: String): String = "$nombre$separador$clave$separador$perfil$separador"
+
+    override fun hashCode(): Int {
+        return nombre.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean = if (this === other) true else if (other is Usuario) other.nombre == nombre else false
 }

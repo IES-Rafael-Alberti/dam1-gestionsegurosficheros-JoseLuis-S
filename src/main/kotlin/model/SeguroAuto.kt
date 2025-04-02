@@ -9,7 +9,7 @@ class SeguroAuto : Seguro {
     private val numPartes: Int
 
     companion object {
-        private var numPolizasAuto = 400000
+        var numPolizasAuto = 400000
         private const val PORCENTAJE_INCREMENTO_PARTES = 2
 
         fun crearSeguroAuto(datos: List<String>): SeguroAuto {
