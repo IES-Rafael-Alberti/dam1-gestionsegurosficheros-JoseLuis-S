@@ -2,34 +2,25 @@ package org.albertidam.insurancemanager.utils
 
 import java.io.File
 import org.albertidam.insurancemanager.model.IExportable
-import org.albertidam.insurancemanager.ui.IEntradaSalida
 
-class Ficheros(val ui: IEntradaSalida) : IUtilFicheros {
-
+class Ficheros : IUtilFicheros {
     override fun leerArchivo(ruta: String): List<String> {
         val lineas = mutableListOf<String>()
-        try {
-            File(ruta).bufferedReader().use { br ->
-                br.forEachLine { lineas.add(it) }
-            }
-        } catch (e: Exception) {
-            ui.mostrarError("No se pudo leer el archivo")
+        File(ruta).bufferedReader().use { br ->
+            br.forEachLine { lineas.add(it) }
         }
         return lineas
     }
 
     override fun agregarLinea(ruta: String, linea: String): Boolean {
-        return try {
-            File(ruta).appendText(linea)
-            true
-        } catch (e: Exception) {
-            ui.mostrarError("${e.message}")
-            false
-        }
+        File(ruta).appendText(linea)
+        return true
     }
 
     override fun <T : IExportable> escribirArchivo(ruta: String, elementos: List<T>): Boolean {
-        TODO("Not yet implemented")
+        val lineas = elementos.joinToString("\n") { it.serializar() }
+        File(ruta).writeText(lineas)
+        return true
     }
 
     override fun existeFichero(ruta: String): Boolean {

@@ -5,7 +5,7 @@ import org.albertidam.insurancemanager.model.Perfil
 import org.albertidam.insurancemanager.model.Usuario
 import org.albertidam.insurancemanager.utils.IUtilSeguridad
 
-class GestorUsuarios(val repoUsuario: IRepoUsuarios, val seguridad: IUtilSeguridad) : IServUsuarios {
+class GestorUsuarios(private val repoUsuario: IRepoUsuarios, private val seguridad: IUtilSeguridad) : IServUsuarios {
     override fun iniciarSesion(nombre: String, clave: String): Perfil? {
         val usuario: Usuario? = repoUsuario.buscar(nombre)
         val comprobacionClave: Boolean = seguridad.verificarClave(clave, seguridad.encriptarClave(clave))

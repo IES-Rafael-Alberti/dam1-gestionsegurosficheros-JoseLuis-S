@@ -4,7 +4,7 @@ import org.albertidam.insurancemanager.data.IRepoSeguros
 import org.albertidam.insurancemanager.model.*
 import java.time.LocalDate
 
-class GestorSeguros(val repoSeguros: IRepoSeguros) : IServSeguros {
+class GestorSeguros(private val repoSeguros: IRepoSeguros) : IServSeguros {
     override fun contratarSeguroHogar(
         dniTitular: String,
         importe: Double,
@@ -20,8 +20,7 @@ class GestorSeguros(val repoSeguros: IRepoSeguros) : IServSeguros {
             anioConstruccion,
             dniTitular,
             importe)
-        repoSeguros.agregar(seguroHogar)
-        return true
+        return repoSeguros.agregar(seguroHogar)
     }
 
     override fun contratarSeguroAuto(
@@ -44,8 +43,7 @@ class GestorSeguros(val repoSeguros: IRepoSeguros) : IServSeguros {
             dniTitular,
             importe
         )
-        repoSeguros.agregar(seguroAuto)
-        return true
+        return repoSeguros.agregar(seguroAuto)
     }
 
     override fun contratarSeguroVida(
@@ -62,8 +60,7 @@ class GestorSeguros(val repoSeguros: IRepoSeguros) : IServSeguros {
             dniTitular,
             importe
         )
-        repoSeguros.agregar(seguroVida)
-        return true
+        return repoSeguros.agregar(seguroVida)
     }
 
     override fun eliminarSeguro(numPoliza: Int): Boolean {

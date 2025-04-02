@@ -24,7 +24,7 @@ class Consola : IEntradaSalida {
 
     override fun pedirInfo(msj: String): String {
         if (msj.isNotEmpty()) mostrar(msj)
-        return readln().trim()
+        return readln()
     }
 
     override fun pedirInfo(msj: String, error: String, debeCumplir: (String) -> Boolean): String {
@@ -70,9 +70,15 @@ class Consola : IEntradaSalida {
 
     override fun pedirInfoOculta(prompt: String): String {
         return try {
-            val terminal = TerminalBuilder.builder().dumb(true).build()
-            val reader = LineReaderBuilder.builder().terminal(terminal).build()
-            reader.readLine(prompt, '*')
+            val terminal = TerminalBuilder.builder()
+                .dumb(true) // Para entornos no interactivos como IDEs
+                .build()
+
+            val reader = LineReaderBuilder.builder()
+                .terminal(terminal)
+                .build()
+
+            reader.readLine(prompt, '*') // Oculta la contraseña con '*'
         } catch (e: UserInterruptException) {
             mostrarError("Entrada cancelada por el usuario (Ctrl + C).", pausa = false)
             ""
@@ -103,7 +109,7 @@ class Consola : IEntradaSalida {
         do {
             mostrar(mensaje)
             respuesta = readLine()?.trim()?.lowercase() ?: ""
-        } while (respuesta != "s" && respuesta != "n")
-        return respuesta == "s"
+        } while (respuesta != "s" && respuesta != "n" && respuesta != "si" && respuesta != "no")
+        return respuesta == "s" || respuesta == "si"
     }
 }
