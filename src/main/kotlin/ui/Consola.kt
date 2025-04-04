@@ -112,4 +112,10 @@ class Consola : IEntradaSalida {
         } while (respuesta != "s" && respuesta != "n" && respuesta != "si" && respuesta != "no")
         return respuesta == "s" || respuesta == "si"
     }
+
+    override fun <T> mostrarLista(lista: List<T>) {
+        lista.forEachIndexed { index, opcion ->
+            println("${index + 1}. $opcion\n")
+        }
+    }
 }

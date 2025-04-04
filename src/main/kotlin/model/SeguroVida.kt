@@ -59,7 +59,6 @@ class SeguroVida : Seguro {
     }
 
     override fun toString(): String {
-        return super.toString().replace("Seguro", "SeguroVida").dropLast(1) +
-                ", fechaNac=$fechaNac, nivelRiesgo=$nivelRiesgo, indemnizacion=${indemnizacion.redondearDosDecimales()})"
+        return super.toString().replace("Seguro", "SeguroVida").dropLast(1) + ", fechaNac=$fechaNac, nivelRiesgo=$nivelRiesgo, indemnizacion=${indemnizacion.redondearDosDecimales()})"
     }
 }

@@ -15,7 +15,7 @@ class GestorUsuarios(private val repoUsuario: IRepoUsuarios, private val segurid
     override fun agregarUsuario(nombre: String, clave: String, perfil: Perfil): Boolean {
         var usuario: Usuario? = repoUsuario.buscar(nombre)
         return if (usuario == null) {
-            usuario = Usuario.crearUsuario(listOf(nombre, clave, perfil.toString()))
+            usuario = Usuario.crearUsuario(listOf(nombre, seguridad.encriptarClave(clave), perfil.toString()))
             repoUsuario.agregar(usuario)
             true
         } else false

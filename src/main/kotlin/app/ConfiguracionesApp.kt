@@ -16,6 +16,9 @@ import org.albertidam.insurancemanager.model.SeguroVida
  */
 object ConfiguracionesApp {
 
+    const val RUTA_SEGUROS = "./res/Seguros.txt"
+    const val RUTA_USUARIOS = "./res/Usuarios.txt"
+
     /**
      * Mapa que asocia el nombre del tipo de seguro (guardado en el fichero) con una función
      * que recibe una lista de Strings y construye el objeto correspondiente.

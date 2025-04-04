@@ -7,7 +7,6 @@ import org.albertidam.insurancemanager.ui.IEntradaSalida
 import org.albertidam.insurancemanager.model.TipoAuto
 import org.albertidam.insurancemanager.model.Cobertura
 import org.albertidam.insurancemanager.model.NivelRiesgo
-
 import java.time.LocalDate
 
 /**
@@ -22,7 +21,7 @@ import java.time.LocalDate
  */
 class GestorMenu(
     private val nombreUsuario: String,
-    private val perfilUsuario: Perfil,
+    private val perfilUsuario: String,
     private val ui: IEntradaSalida,
     private val gestorUsuarios: IServUsuarios,
     private val gestorSeguros: IServSeguros
@@ -143,16 +142,16 @@ class GestorMenu(
      * Mostrar la lista de usuarios (Todos o filstrados por un perfil)
      */
     fun consultarUsuarios() {
-        val respuestaUsuario = ui.preguntar("")
+        val respuestaUsuario = ui.preguntar("Consultar todo (s/si) o por perfil (n/no) >> ")
         when (respuestaUsuario) {
-            true -> gestorSeguros.consultarTodos()
+            true -> ui.mostrarLista(gestorUsuarios.consultarTodos())
             else -> consultarUsuariosPerfil()
         }
     }
 
     private fun consultarUsuariosPerfil() {
-        val perfil = ui.pedirInfo("Introduce que tipo de perfil quieres ver, por defecto: Consulta")
-        ui.mostrar(formatearMenu(gestorUsuarios.consultarPorPerfil(Perfil.getPerfil(perfil))))
+        val perfil = ui.pedirInfo("Tipo de perfil para ver (por defecto Consulta) >> ")
+        ui.mostrarLista(gestorUsuarios.consultarPorPerfil(Perfil.getPerfil(perfil)))
     }
 
     /**
@@ -210,24 +209,24 @@ class GestorMenu(
                 val dni = pedirDni()
                 val importe = pedirImporte()
                 val metrosCuadrados = ui.pedirEntero(
-                    "Introduce los metros cuadrados",
+                    "Metros cuadrados >> ",
                     "El número de metros debe ser positivo",
                     "Debes introducir un número"
                 ) {
                     it > 0
                 }
                 val valorContenido = ui.pedirDouble(
-                    "Introduce el valor del contenido",
+                    "Valor del contenido >> ",
                     "El valor debe ser positivo",
                     "Debes introducir un número válido"
                 ) {
                     it > 0
                 }
-                val direccion = ui.pedirInfo("Introduce tu dirección")
+                val direccion = ui.pedirInfo("Direccion >> ")
                 val anioConstruccion = ui.pedirEntero(
-                    "Introduce el año de construcción",
+                    "Año de construccion >> ",
                     "El año debe ser positivo y menor que el año actual",
-                    "debe ser un número"
+                    "Introduce un numero"
                 ) {
                     it > 0
                     it < LocalDate.now().year
@@ -259,16 +258,16 @@ class GestorMenu(
                 val importe = pedirImporte()
                 val descripcion = ui.pedirInfo("Descripción del auto >> ")
                 val combustible = ui.pedirInfo("Tipo de combustible >> ")
-                val tipoAuto = ui.pedirInfo("Tipo de auto", "El tipo de auto no existe") {
-                    it.lowercase() in TipoAuto.entries.toString()
+                val tipoAuto = ui.pedirInfo("Tipo de auto (COCHE/CAMION/MOTO) >> ", "El tipo de auto no existe") {
+                    it.uppercase() in TipoAuto.entries.toString()
                 }.uppercase()
-                val cobertura = ui.pedirInfo("Cobertura >> ", "el tipo de cobertura no existe") {
-                    it.lowercase() in Cobertura.entries.toString()
+                val cobertura = ui.pedirInfo("Cobertura >> ", "El tipo de cobertura no existe") {
+                    it.uppercase() in Cobertura.entries.toString()
                 }
                 val asistenciaEnCarretera = ui.preguntar("¿Asistencia en carretera? (s/si/n/no) >> ")
                 val numPartes = ui.pedirEntero(
-                    "Introduce número de partes",
-                    "El número de partes debe ser positivo",
+                    "Numero de partes >> ",
+                    "El numero de partes debe ser positivo",
                     "Introduce un número entero"
                 ) {
                     it > 0
@@ -302,7 +301,7 @@ class GestorMenu(
                 val importe = pedirImporte()
                 val fechaNacimiento = ui.pedirInfo("Fecha de nacimiento >> ")
                 val fechaNacimientoDate = LocalDate.parse(fechaNacimiento)
-                val nivelRiesgo = ui.pedirInfo("Nivel de riesgo >> ", "Introduce un nivel de riesgo válido" ) {
+                val nivelRiesgo = ui.pedirInfo("Nivel de riesgo (BAJO/MEDIO/ALTO) >> ", "Introduce un nivel de riesgo válido" ) {
                     it in NivelRiesgo.entries.toString()
                 }
                 val indemnizacion = ui.pedirDouble(
@@ -353,24 +352,24 @@ class GestorMenu(
     /** Muestra todos los seguros existentes */
     fun consultarSeguros() {
         ui.mostrar("--- SEGUROS ---")
-        ui.mostrar(formatearMenu(gestorSeguros.consultarTodos()))
+        ui.mostrarLista(gestorSeguros.consultarTodos())
     }
 
     /** Muestra todos los seguros de tipo hogar */
     fun consultarSegurosHogar() {
         ui.mostrar("--- SEGUROS DE HOGAR ---")
-        ui.mostrar(formatearMenu(gestorSeguros.consultarPorTipo("seguroHogar")))
+        ui.mostrarLista(gestorSeguros.consultarPorTipo("seguroHogar"))
     }
 
     /** Muestra todos los seguros de tipo auto */
     fun consultarSegurosAuto() {
         ui.mostrar("--- SEGUROS DE AUTO ---")
-        ui.mostrar(formatearMenu(gestorSeguros.consultarPorTipo("seguroAuto")))
+        ui.mostrarLista(gestorSeguros.consultarPorTipo("seguroAuto"))
     }
 
     /** Muestra todos los seguros de tipo vida */
     fun consultarSegurosVida() {
         ui.mostrar("--- SEGUROS DE VIDA ---")
-        ui.mostrar(formatearMenu(gestorSeguros.consultarPorTipo("seguroVida")))
+        ui.mostrarLista(gestorSeguros.consultarPorTipo("seguroVida"))
     }
 }

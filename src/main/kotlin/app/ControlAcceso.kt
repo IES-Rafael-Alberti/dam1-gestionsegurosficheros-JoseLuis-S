@@ -43,9 +43,7 @@ class ControlAcceso(
      * @return Un par (nombreUsuario, perfil) si el acceso fue exitoso, o `null` si el usuario cancela el acceso.
      */
     fun autenticar(): Pair<String?, Perfil?> {
-        return if (verificarFicheroUsuarios()) {
-            iniciarSesion()
-        } else Pair(null, null)
+        return if (verificarFicheroUsuarios()) iniciarSesion() else Pair(null, null)
     }
 
     /**
@@ -70,10 +68,10 @@ class ControlAcceso(
 
     fun crearAdmin(): Boolean {
         ui.mostrar("--- CREACION ADMIN ---", false)
-        val nombreUsuario = ui.pedirInfo("Introduce nombre usuario:\n")
+        val nombreUsuario = ui.pedirInfo("Nombre usuario >>")
         ui.limpiarPantalla()
         ui.mostrar("--- CREACION ADMIN ---", false)
-        val clave = ui.pedirInfoOculta("Introduce la clave:\n")
+        val clave = ui.pedirInfoOculta("Clave >> ")
         ui.limpiarPantalla()
         try {
             gestorUsuarios.agregarUsuario(nombreUsuario, clave, Perfil.ADMIN)
@@ -101,7 +99,7 @@ class ControlAcceso(
             nombreUsuario = ui.pedirInfo("Introduce nombre usuario:\n")
             ui.limpiarPantalla()
 
-            ui.mostrar("--- CREACION ADMIN ---", false)
+            ui.mostrar("--- INICIO SESION ---", false)
             val clave = ui.pedirInfoOculta("Introduce la clave:\n")
             ui.limpiarPantalla()
 

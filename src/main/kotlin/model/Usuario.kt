@@ -24,5 +24,7 @@ class Usuario private constructor(
         return nombre.hashCode()
     }
 
+    override fun toString(): String = "Usuario(nombre: $nombre, clave: $clave, perfil: $perfil"
+
     override fun equals(other: Any?): Boolean = if (this === other) true else if (other is Usuario) other.nombre == nombre else false
 }
