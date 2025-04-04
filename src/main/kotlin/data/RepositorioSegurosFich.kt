@@ -29,8 +29,27 @@ class RepositorioSegurosFich(private val rutaArchivo: String, private val fich: 
     }
 
     override fun cargarSeguros(mapa: Map<String, (List<String>) -> Seguro>): Boolean {
+        val lineas = fich.leerArchivo(rutaArchivo)
+        seguros.clear()
 
+        for (linea in lineas) {
+            val datos = linea.split(",").toMutableList()
+            val tipoSeguro = datos.removeAt(0)
+            val parametros = datos
+
+            val crearSeguro = mapa[tipoSeguro]
+            if (crearSeguro != null) {
+                seguros.add(crearSeguro(parametros))
+            } else {
+                seguros.clear()
+                return false
+            }
+        }
+
+        actualizarContadores(seguros)
+        return true
     }
+
 
     private fun actualizarContadores(seguros: List<Seguro>) {
         // Actualizar los contadores de polizas del companion object según el tipo de seguro

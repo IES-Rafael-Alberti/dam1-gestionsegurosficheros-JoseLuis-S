@@ -2,8 +2,6 @@ package org.albertidam.insurancemanager.app
 
 import org.albertidam.insurancemanager.data.ICargarSegurosIniciales
 import org.albertidam.insurancemanager.data.ICargarUsuariosIniciales
-import org.albertidam.insurancemanager.data.IRepoSeguros
-import org.albertidam.insurancemanager.data.IRepoUsuarios
 import org.albertidam.insurancemanager.ui.IEntradaSalida
 
 /**
@@ -28,7 +26,7 @@ class CargadorInicial(
         try {
             repoUsuarios.cargarUsuarios()
         } catch (e: Exception) {
-
+            ui.mostrarError("$e")
         }
     }
 
@@ -39,7 +37,10 @@ class CargadorInicial(
      * Muestra errores si ocurre un problema en la lectura o conversión de datos.
      */
     fun cargarSeguros() {
-
+        try {
+            repoSeguros.cargarSeguros(ConfiguracionesApp.mapaCrearSeguros)
+        } catch (e: Exception) {
+            ui.mostrarError("$e")
+        }
     }
-
 }

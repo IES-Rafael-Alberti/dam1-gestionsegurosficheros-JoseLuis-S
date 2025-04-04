@@ -1,5 +1,10 @@
 package org.albertidam.insurancemanager.app
 
+import org.albertidam.insurancemanager.model.Perfil
+import org.albertidam.insurancemanager.service.IServSeguros
+import org.albertidam.insurancemanager.service.IServUsuarios
+import org.albertidam.insurancemanager.ui.IEntradaSalida
+
 /**
  * Clase encargada de gestionar el flujo de menús y opciones de la aplicación,
  * mostrando las acciones disponibles según el perfil del usuario autenticado.
@@ -10,8 +15,13 @@ package org.albertidam.insurancemanager.app
  * @property gestorUsuarios Servicio de operaciones sobre usuarios.
  * @property gestorSeguros Servicio de operaciones sobre seguros.
  */
-class GestorMenu
-{
+class GestorMenu(
+    private val nombreUsuario: String,
+    private val perfilUsuario: Perfil,
+    private val ui: IEntradaSalida,
+    private val gestorUsuarios: IServUsuarios,
+    private val gestorSeguros: IServSeguros
+) {
 
     /**
      * Inicia un menú según el índice correspondiente al perfil actual.
@@ -19,7 +29,7 @@ class GestorMenu
      * @param indice Índice del menú que se desea mostrar (0 = principal).
      */
     fun iniciarMenu(indice: Int = 0) {
-        val (opciones, acciones) = ConfiguracionesApp.obtenerMenuYAcciones(perfilUsuario, indice)
+        val (opciones, acciones) = ConfiguracionesApp.obtenerMenuYAcciones(perfilUsuario.toString(), indice)
         ejecutarMenu(opciones, acciones)
     }
 
@@ -66,24 +76,70 @@ class GestorMenu
 
     /** Crea un nuevo usuario solicitando los datos necesarios al usuario */
     fun nuevoUsuario() {
-        TODO("Implementar este método")
+        ui.mostrar("--- CREACION USUARIO ---")
+        val perfil: Perfil = pedirPerfil()
+        ui.mostrar("--- CREACION $perfil ---", false)
+        val nombre: String = pedirNombre()
+        if (gestorUsuarios.buscarUsuario(nombre) != null) {
+            ui.mostrarError("El usuario $nombre ya existe.")
+            return
+        }
+        ui.mostrar("--- CREACION $perfil ---", false)
+        val clave: String = pedirClave()
+        gestorUsuarios.agregarUsuario(nombre, clave, perfil)
+    }
+
+    private fun pedirPerfil(): Perfil {
+        var perfil: String
+        do {
+            perfil = ui.pedirInfo("Perfil del usuario >> ").uppercase()
+            ui.limpiarPantalla()
+        } while (perfil != "GESTION" && perfil != "CONSULTA")
+        return Perfil.getPerfil(perfil)
+    }
+
+    private fun pedirNombre(): String {
+        var nombre: String
+        do {
+            nombre = ui.pedirInfo("Nombre usuario >>")
+            ui.limpiarPantalla()
+        } while (nombre == "")
+        return nombre
+    }
+
+    private fun pedirClave(): String {
+        var clave: String
+        do {
+            clave = ui.pedirInfoOculta("Clave >> ")
+            ui.limpiarPantalla()
+        } while (clave == "")
+        return clave
     }
 
     /** Elimina un usuario si existe */
     fun eliminarUsuario() {
-        TODO("Implementar este método")
+        ui.mostrar("--- ELIMINAR USUARIO ---", false)
+        val nombre: String = pedirNombre()
+        if (gestorUsuarios.buscarUsuario(nombre) == null) {
+            ui.mostrarError("El usuario $nombre no existe.")
+            return
+        }
     }
 
     /** Cambia la contraseña del usuario actual */
     fun cambiarClaveUsuario() {
-        TODO("Implementar este método")
+        ui.mostrar("--- CAMBIAR CLAVE ---")
+        val clave = ui.pedirInfo("Nueva clave >> ")
+        ui.limpiarPantalla()
+        val usuario = gestorUsuarios.buscarUsuario(nombreUsuario)
+        gestorUsuarios.cambiarClave(usuario!!, clave)
     }
 
     /**
      * Mostrar la lista de usuarios (Todos o filstrados por un perfil)
      */
     fun consultarUsuarios() {
-        TODO("Implementar este método")
+
     }
 
     /**
@@ -143,5 +199,4 @@ class GestorMenu
     fun consultarSegurosVida() {
         TODO("Implementar este método")
     }
-
 }

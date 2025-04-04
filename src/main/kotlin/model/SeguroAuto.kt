@@ -12,17 +12,18 @@ class SeguroAuto : Seguro {
         var numPolizasAuto = 400000
         private const val PORCENTAJE_INCREMENTO_PARTES = 2
 
-        fun crearSeguroAuto(datos: List<String>): SeguroAuto {
-            require(datos.size == 7) { "Datos no válidos para crear un seguro de auto" }
+        fun crearSeguro(datos: List<String>): SeguroAuto {
+            require(datos.size == 9) { "Datos no válidos para crear un seguro de auto" }
             val descripcion = datos[0]
             val combustible = datos[1]
             val tipoAuto = TipoAuto.getAuto(datos[2])
             val tipoCobertura = Cobertura.getCobertura(datos[3])
             val asistenciaCarretera = datos[4].toBooleanStrict()
             val numPartes = datos[5].toInt()
-            val dniTitular = datos[6]
-            val importe = datos[7].toDouble()
-            return SeguroAuto(descripcion, combustible, tipoAuto, tipoCobertura, asistenciaCarretera, numPartes, dniTitular, importe)
+            val numPoliza = datos[6].toInt()
+            val dniTitular = datos[7]
+            val importe = datos[8].toDouble()
+            return SeguroAuto(descripcion, combustible, tipoAuto, tipoCobertura, asistenciaCarretera, numPartes, numPoliza, dniTitular, importe)
         }
     }
 

@@ -15,14 +15,15 @@ class SeguroVida : Seguro {
     companion object {
         var numPolizasVida = 800000
 
-        fun crearSeguroVida(datos: List<String>): SeguroVida {
-            require(datos.size == 5) { "Datos no validos para crear un seguro de vida" }
+        fun crearSeguro(datos: List<String>): SeguroVida {
+            require(datos.size == 6) { "Datos no validos para crear un seguro de vida" }
             val fecha = LocalDate.parse(datos[0])
             val riesgo = NivelRiesgo.getRiesgo(datos[1])
             val indemnizacion = datos[2].toDouble()
-            val dniTitular = datos[3]
-            val importe = datos[4].toDouble()
-            return SeguroVida(fecha, riesgo, indemnizacion, dniTitular, importe)
+            val numPoliza = datos[3].toInt()
+            val dniTitular = datos[4]
+            val importe = datos[5].toDouble()
+            return SeguroVida(fecha, riesgo, indemnizacion, numPoliza, dniTitular, importe)
         }
     }
 

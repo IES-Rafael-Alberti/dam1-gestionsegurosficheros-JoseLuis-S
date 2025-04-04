@@ -94,11 +94,11 @@ class ControlAcceso(
         var inicioSesionExitoso: Perfil?
         do {
             ui.mostrar("--- INICIO SESION ---")
-            nombreUsuario = ui.pedirInfo("Introduce nombre usuario (o salir si no quiere continuar):\n")
+            nombreUsuario = ui.pedirInfo("Introduce nombre usuario:\n")
             ui.limpiarPantalla()
 
             ui.mostrar("--- CREACION ADMIN ---", false)
-            val clave = ui.pedirInfoOculta("Introduce la clave (o salir si no quiere continuar):\n")
+            val clave = ui.pedirInfoOculta("Introduce la clave:\n")
             ui.limpiarPantalla()
 
             inicioSesionExitoso = gestorUsuarios.iniciarSesion(nombreUsuario, clave)

@@ -27,6 +27,15 @@ class RepoUsuariosFich(private val rutaArchivo: String, private val fich: IUtilF
 
     override fun cargarUsuarios(): Boolean {
         val lineas = fich.leerArchivo(rutaArchivo)
-
+        if (lineas.isNotEmpty()) {
+            usuarios.clear()
+            for (linea in lineas) {
+                val datos = linea.split(";")
+                if (datos.size == 3) {
+                    usuarios.add(Usuario.crearUsuario(datos))
+                }
+            }
+        }
+        return usuarios.isNotEmpty()
     }
 }

@@ -14,15 +14,16 @@ class SeguroHogar : Seguro {
         const val PORCENTAJE_INCREMENTO_ANIOS = 0.02
         const val CICLO_ANIOS_INCREMENTO = 5
 
-        fun crearSeguroHogar(datos: List<String>): SeguroHogar {
-            require(datos.size == 6) { "Datos no validos para crear un seguro de hogar" }
+        fun crearSeguro(datos: List<String>): SeguroHogar {
+            require(datos.size == 7) { "Datos no validos para crear un seguro de hogar" }
             val metros = datos[0].toInt()
             val valor = datos[1].toDouble()
             val direccion = datos[2]
             val anio = datos[3].toInt()
-            val dniTitular = datos[4]
-            val importe = datos[5].toDouble()
-            return SeguroHogar(metros, valor, direccion, anio, dniTitular, importe)
+            val numPoliza = datos[4].toInt()
+            val dniTitular = datos[5]
+            val importe = datos[6].toDouble()
+            return SeguroHogar(metros, valor, direccion, anio, numPoliza, dniTitular, importe)
         }
     }
 
