@@ -33,11 +33,11 @@ class RepositorioSegurosFich(private val rutaArchivo: String, private val fich: 
         seguros.clear()
 
         for (linea in lineas) {
-            val datos = linea.split(",").toMutableList()
+            val datos = linea.split(";").toMutableList()
             val tipoSeguro = datos.removeAt(0)
             val parametros = datos
-
             val crearSeguro = mapa[tipoSeguro]
+
             if (crearSeguro != null) {
                 seguros.add(crearSeguro(parametros))
             } else {

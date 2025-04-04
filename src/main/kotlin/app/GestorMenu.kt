@@ -4,6 +4,11 @@ import org.albertidam.insurancemanager.model.Perfil
 import org.albertidam.insurancemanager.service.IServSeguros
 import org.albertidam.insurancemanager.service.IServUsuarios
 import org.albertidam.insurancemanager.ui.IEntradaSalida
+import org.albertidam.insurancemanager.model.TipoAuto
+import org.albertidam.insurancemanager.model.Cobertura
+import org.albertidam.insurancemanager.model.NivelRiesgo
+
+import java.time.LocalDate
 
 /**
  * Clase encargada de gestionar el flujo de menús y opciones de la aplicación,
@@ -36,7 +41,7 @@ class GestorMenu(
     /**
      * Formatea el menú en forma numerada.
      */
-    private fun formatearMenu(opciones: List<String>): String {
+    private fun <T> formatearMenu(opciones: List<T>): String {
         var cadena = ""
         opciones.forEachIndexed { index, opcion ->
             cadena += "${index + 1}. $opcion\n"
@@ -67,8 +72,7 @@ class GestorMenu(
                 val accion = ejecutar[opcion]
                 // Si la accion ejecutada del menú retorna true, debe salir del menú
                 if (accion != null && accion(this)) return
-            }
-            else {
+            } else {
                 ui.mostrarError("Opción no válida!")
             }
         } while (true)
@@ -139,7 +143,16 @@ class GestorMenu(
      * Mostrar la lista de usuarios (Todos o filstrados por un perfil)
      */
     fun consultarUsuarios() {
+        val respuestaUsuario = ui.preguntar("")
+        when (respuestaUsuario) {
+            true -> gestorSeguros.consultarTodos()
+            else -> consultarUsuariosPerfil()
+        }
+    }
 
+    private fun consultarUsuariosPerfil() {
+        val perfil = ui.pedirInfo("Introduce que tipo de perfil quieres ver, por defecto: Consulta")
+        ui.mostrar(formatearMenu(gestorUsuarios.consultarPorPerfil(Perfil.getPerfil(perfil))))
     }
 
     /**
@@ -147,8 +160,20 @@ class GestorMenu(
      *
      * @return El DNI introducido en mayúsculas.
      */
-    private fun pedirDni() {
-        TODO("Implementar este método")
+    private fun pedirDni(): String {
+        var dni = ""
+        do {
+            try {
+                dni = ui.pedirInfo("DNI >> ", "DNI incorrecto, debe tener 8 dígitos y una letra.") {
+                    it.length >= 9 && it[8].isLetter()
+                }
+            } catch (e: IllegalArgumentException) {
+                ui.mostrarError(e.toString())
+            } catch (e: Exception) {
+                ui.mostrarError(e.toString())
+            }
+        } while (dni == "")
+        return dni.uppercase()
     }
 
     /**
@@ -156,47 +181,196 @@ class GestorMenu(
      *
      * @return El valor introducido como `Double` si es válido.
      */
-    private fun pedirImporte() {
-        TODO("Implementar este método")
+    private fun pedirImporte(): Double {
+        var importe = 0.0
+        do {
+            try {
+                ui.limpiarPantalla()
+                importe = ui.pedirDouble(
+                    "Importe >> ",
+                    "Introduzca un importe positivo",
+                    "Introduce un número decimal"
+                ) {
+                    it > 0
+                }
+            } catch (e: IllegalArgumentException) {
+                ui.mostrarError(e.toString())
+            } catch (e: Exception) {
+                ui.mostrarError(e.toString())
+            }
+        } while (importe <= 0)
+        return importe
     }
 
     /** Crea un nuevo seguro de hogar solicitando los datos al usuario */
     fun contratarSeguroHogar() {
-        TODO("Implementar este método")
+        var seguroCorrecto = false
+        do {
+            try {
+                val dni = pedirDni()
+                val importe = pedirImporte()
+                val metrosCuadrados = ui.pedirEntero(
+                    "Introduce los metros cuadrados",
+                    "El número de metros debe ser positivo",
+                    "Debes introducir un número"
+                ) {
+                    it > 0
+                }
+                val valorContenido = ui.pedirDouble(
+                    "Introduce el valor del contenido",
+                    "El valor debe ser positivo",
+                    "Debes introducir un número válido"
+                ) {
+                    it > 0
+                }
+                val direccion = ui.pedirInfo("Introduce tu dirección")
+                val anioConstruccion = ui.pedirEntero(
+                    "Introduce el año de construcción",
+                    "El año debe ser positivo y menor que el año actual",
+                    "debe ser un número"
+                ) {
+                    it > 0
+                    it < LocalDate.now().year
+                }
+                gestorSeguros.contratarSeguroHogar(
+                    dni,
+                    importe,
+                    metrosCuadrados,
+                    valorContenido,
+                    direccion,
+                    anioConstruccion
+                )
+                seguroCorrecto = true
+            } catch (e: IllegalArgumentException) {
+                ui.mostrarError(e.toString())
+            } catch (e: Exception) {
+                ui.mostrarError(e.toString())
+            }
+        } while (!seguroCorrecto)
     }
 
     /** Crea un nuevo seguro de auto solicitando los datos al usuario */
     fun contratarSeguroAuto() {
-        TODO("Implementar este método")
+        var seguroCorrecto = false
+        do {
+            try {
+                ui.limpiarPantalla()
+                val dni = pedirDni()
+                val importe = pedirImporte()
+                val descripcion = ui.pedirInfo("Descripción del auto >> ")
+                val combustible = ui.pedirInfo("Tipo de combustible >> ")
+                val tipoAuto = ui.pedirInfo("Tipo de auto", "El tipo de auto no existe") {
+                    it.lowercase() in TipoAuto.entries.toString()
+                }.uppercase()
+                val cobertura = ui.pedirInfo("Cobertura >> ", "el tipo de cobertura no existe") {
+                    it.lowercase() in Cobertura.entries.toString()
+                }
+                val asistenciaEnCarretera = ui.preguntar("¿Asistencia en carretera? (s/si/n/no) >> ")
+                val numPartes = ui.pedirEntero(
+                    "Introduce número de partes",
+                    "El número de partes debe ser positivo",
+                    "Introduce un número entero"
+                ) {
+                    it > 0
+                }
+                gestorSeguros.contratarSeguroAuto(
+                    dni,
+                    importe,
+                    descripcion,
+                    combustible,
+                    TipoAuto.getAuto(tipoAuto),
+                    Cobertura.getCobertura(cobertura),
+                    asistenciaEnCarretera,
+                    numPartes
+                )
+                seguroCorrecto = true
+            } catch (e: IllegalArgumentException) {
+                ui.mostrarError(e.toString())
+            } catch (e: Exception) {
+                ui.mostrarError(e.toString())
+            }
+        } while (!seguroCorrecto)
     }
 
     /** Crea un nuevo seguro de vida solicitando los datos al usuario */
     fun contratarSeguroVida() {
-        TODO("Implementar este método")
+        var seguroCorrecto = false
+        do {
+            try {
+                ui.limpiarPantalla()
+                val dni = pedirDni()
+                val importe = pedirImporte()
+                val fechaNacimiento = ui.pedirInfo("Fecha de nacimiento >> ")
+                val fechaNacimientoDate = LocalDate.parse(fechaNacimiento)
+                val nivelRiesgo = ui.pedirInfo("Nivel de riesgo >> ", "Introduce un nivel de riesgo válido" ) {
+                    it in NivelRiesgo.entries.toString()
+                }
+                val indemnizacion = ui.pedirDouble(
+                    "Indemnización >> ",
+                    "La indemnización debe ser positiva",
+                    "Introduce un número decimal"
+                ) {
+                    it > 0
+                }
+                gestorSeguros.contratarSeguroVida(
+                    dni,
+                    importe,
+                    fechaNacimientoDate,
+                    NivelRiesgo.getRiesgo(nivelRiesgo),
+                    indemnizacion
+                )
+                seguroCorrecto = true
+            } catch (e: IllegalArgumentException) {
+                ui.mostrarError(e.toString())
+            } catch (e: Exception) {
+                ui.mostrarError(e.toString())
+            }
+        } while (!seguroCorrecto)
     }
 
     /** Elimina un seguro si existe por su número de póliza */
     fun eliminarSeguro() {
-        TODO("Implementar este método")
+        var seguroCorrecto = false
+        do {
+            try {
+                ui.limpiarPantalla()
+                val numPoliza = ui.pedirEntero(
+                    "Numero poliza a eliminar >> ",
+                    "Introduce un número positivo",
+                    "El número de póliza debe ser número entero"
+                ) {
+                    it > 0
+                }
+                gestorSeguros.eliminarSeguro(numPoliza)
+                seguroCorrecto = true
+
+            } catch (e: IllegalArgumentException) {
+                ui.mostrarError(e.toString())
+            }
+        } while (!seguroCorrecto)
     }
 
     /** Muestra todos los seguros existentes */
     fun consultarSeguros() {
-        TODO("Implementar este método")
+        ui.mostrar("--- SEGUROS ---")
+        ui.mostrar(formatearMenu(gestorSeguros.consultarTodos()))
     }
 
     /** Muestra todos los seguros de tipo hogar */
     fun consultarSegurosHogar() {
-        TODO("Implementar este método")
+        ui.mostrar("--- SEGUROS DE HOGAR ---")
+        ui.mostrar(formatearMenu(gestorSeguros.consultarPorTipo("seguroHogar")))
     }
 
     /** Muestra todos los seguros de tipo auto */
     fun consultarSegurosAuto() {
-        TODO("Implementar este método")
+        ui.mostrar("--- SEGUROS DE AUTO ---")
+        ui.mostrar(formatearMenu(gestorSeguros.consultarPorTipo("seguroAuto")))
     }
 
     /** Muestra todos los seguros de tipo vida */
     fun consultarSegurosVida() {
-        TODO("Implementar este método")
+        ui.mostrar("--- SEGUROS DE VIDA ---")
+        ui.mostrar(formatearMenu(gestorSeguros.consultarPorTipo("seguroVida")))
     }
 }

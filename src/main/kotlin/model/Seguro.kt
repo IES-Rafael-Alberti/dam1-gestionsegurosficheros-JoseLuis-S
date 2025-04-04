@@ -19,7 +19,7 @@ abstract class Seguro(
 
     fun comprobarNumPoliza(numPoliza: Int): Boolean = numPoliza == this.numPoliza
 
-    override fun serializar(separador: String): String = "$numPoliza$separador$dniTitular$separador$importe"
+    override fun serializar(separador: String): String = "${tipoSeguro()}$numPoliza$separador$dniTitular$separador$importe"
 
     override fun toString(): String = "Seguro(numPoliza=$numPoliza, dniTitular=$dniTitular, importe=${importe.redondearDosDecimales()})"
 
