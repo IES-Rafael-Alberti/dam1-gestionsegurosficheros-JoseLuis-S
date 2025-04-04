@@ -16,7 +16,7 @@ class Seguridad : IUtilSeguridad {
      * de los casos.
      * @return El hash de la clave en formato String, que puede ser almacenado de forma segura.
      */
-    override fun encriptarClave(clave: String, nivelSeguridad: Int = 12): String {
+    override fun encriptarClave(clave: String, nivelSeguridad: Int): String {
         return BCrypt.withDefaults().hashToString(nivelSeguridad, clave.toCharArray())
     }
 

@@ -42,10 +42,10 @@ class ControlAcceso(
      *
      * @return Un par (nombreUsuario, perfil) si el acceso fue exitoso, o `null` si el usuario cancela el acceso.
      */
-    fun autenticar(): Pair<String, Perfil>? {
+    fun autenticar(): Pair<String?, Perfil?> {
         return if (verificarFicheroUsuarios()) {
             iniciarSesion()
-        } else null
+        } else Pair(null, null)
     }
 
     /**
@@ -64,20 +64,24 @@ class ControlAcceso(
             if (!ui.preguntar("No se ha encontrado ADMIN, ¿desea crear un usuario ADMIN? (s/si/n/no): ")) {
                 return false
             }
-            ui.mostrar("--- CREACION ADMIN ---", false)
-            val nombreUsuario = ui.pedirInfo("Introduce nombre usuario:\n")
-            ui.limpiarPantalla()
-            ui.mostrar("--- CREACION ADMIN ---", false)
-            val clave = ui.pedirInfoOculta("Introduce la clave:\n")
-            ui.limpiarPantalla()
-            try {
-                gestorUsuarios.agregarUsuario(nombreUsuario, clave, Perfil.ADMIN)
-                return true
-            } catch (e: Exception) {
-                ui.mostrarError("No se pudo agregar el usuario")
-                return false
-            }
+            return if (crearAdmin()) true else false
         } else return false
+    }
+
+    fun crearAdmin(): Boolean {
+        ui.mostrar("--- CREACION ADMIN ---", false)
+        val nombreUsuario = ui.pedirInfo("Introduce nombre usuario:\n")
+        ui.limpiarPantalla()
+        ui.mostrar("--- CREACION ADMIN ---", false)
+        val clave = ui.pedirInfoOculta("Introduce la clave:\n")
+        ui.limpiarPantalla()
+        try {
+            gestorUsuarios.agregarUsuario(nombreUsuario, clave, Perfil.ADMIN)
+            return true
+        } catch (e: Exception) {
+            ui.mostrarError("No se pudo agregar el usuario")
+            return false
+        }
     }
 
     /**
@@ -89,8 +93,8 @@ class ControlAcceso(
      * @return Un par (nombreUsuario, perfil) si las credenciales son correctas,
      *         o `null` si el usuario decide no continuar.
      */
-    private fun iniciarSesion(): Pair<String, Perfil>? {
-        var nombreUsuario: String
+    private fun iniciarSesion(): Pair<String?, Perfil?> {
+        var nombreUsuario: String?
         var inicioSesionExitoso: Perfil?
         do {
             ui.mostrar("--- INICIO SESION ---")
