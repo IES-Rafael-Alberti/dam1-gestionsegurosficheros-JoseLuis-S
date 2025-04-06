@@ -63,7 +63,7 @@ class ControlAcceso(
                 return false
             }
             return if (crearAdmin()) true else false
-        } else return false
+        } else return true
     }
 
     fun crearAdmin(): Boolean {
